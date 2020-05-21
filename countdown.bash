@@ -36,13 +36,15 @@ countdown()
     while [ $SECS -gt 0 ]; do
         # Clear Line
         printf "\r\33[2K\r"
-        [ $SECS -ge 86400 ] \
-            && printf "\r%02d %02d:%02d:%02d " $((SECS/86400)) $((((SECS/3600)%3600)%24)) $(((SECS/60)%60)) $((SECS%60)) \
-            || printf "\r%02d:%02d:%02d " $(((SECS/3600)%3600)) $(((SECS/60)%60)) $((SECS%60))
+        if [ $SECS -ge 86400 ]; then
+            printf "\r$2 %02d %02d:%02d:%02d " $((SECS/86400)) $((((SECS/3600)%3600)%24)) $(((SECS/60)%60)) $((SECS%60))
+        else
+            printf "\r$2 %02d:%02d:%02d " $(((SECS/3600)%3600)) $(((SECS/60)%60)) $((SECS%60))
+        fi
         # shellcheck disable=SC2004
         SECS=$(( $SECS - 1 ))
-        sleep 1 || return 1; # return 'error'; SIGINTR, for example
+        sleep 1 || return 1;
     done
-    # Again, Clear Line
+    # Clear Line one final time.
     printf "\r\33[2K\r"
 }
